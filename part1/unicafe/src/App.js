@@ -12,22 +12,27 @@ const Statistics = (props) => {
     return <p>No feedback given</p>;
   }
   return (
-    <div>
-      <StatisticLine text="good" value={props.good} />
-      <StatisticLine text="neutral" value={props.neutral} />
-      <StatisticLine text="bad" value={props.bad} />
-      <StatisticLine text="all" value={sum} />
-      <StatisticLine text="average" value={average} />
-      <StatisticLine text="positive" value={positive} percent={"%"} />
-    </div>
+    <table>
+      <tbody>
+        <StatisticLine text="good" value={props.good} />
+        <StatisticLine text="neutral" value={props.neutral} />
+        <StatisticLine text="bad" value={props.bad} />
+        <StatisticLine text="all" value={sum} />
+        <StatisticLine text="average" value={average} />
+        <StatisticLine text="positive" value={positive} percent={"%"} />
+      </tbody>
+    </table>
   );
 };
 
 const StatisticLine = (props) => {
+  const formatted =
+    Math.round((props.percent ? props.value * 100 : props.value) * 10) / 10;
+
   return (
     <tr>
       <td>{props.text}</td>
-      <td>{props.value}</td>
+      <td>{formatted}</td>
       {props.percent && <td>{props.percent}</td>}
     </tr>
   );
