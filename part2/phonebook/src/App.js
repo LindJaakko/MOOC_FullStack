@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+const Number = ({ person }) => {
+  return person.content + "\r\n" + "jotain";
+};
+
 const App = () => {
   const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
   const [newName, setNewName] = useState("");
@@ -33,7 +37,11 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      ...
+      <div>
+        {persons.map((person) => (
+          <Number key={person.id} person={person} />
+        ))}
+      </div>
     </div>
   );
 };
