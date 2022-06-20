@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const Number = ({ person }) => {
-  return person.content + "\r\n" + "jotain";
+  return person.name + "\r\n" + "jotain";
 };
 
 const App = () => {
@@ -11,8 +11,7 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
     const noteObject = {
-      content: newName,
-      id: newName.name,
+      name: newName,
     };
     setPersons(persons.concat(noteObject));
     setNewName("");
@@ -27,19 +26,18 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <form onSubmit={addPerson}>
-        <div>debug: {newName}</div>
+        <input value={newName} onChange={handleNoteChange} />
         <div>
           name: <input />
         </div>
         <div>
-          <input value={newName} onChange={handleNoteChange} />
           <button type="submit">add</button>
         </div>
       </form>
       <h2>Numbers</h2>
       <div>
         {persons.map((person) => (
-          <Number key={person.id} person={person} />
+          <Number key={person.name} person={person} />
         ))}
       </div>
     </div>
