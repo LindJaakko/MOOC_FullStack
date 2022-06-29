@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const CountryLanguages = ({ country }) => {
-  console.log(country.languages);
+const CountryLanguages = ({ languages }) => {
+  const keys = Object.keys(languages);
   return (
     <div>
       <p>
         <strong>{`languages:`}</strong>
       </p>
       <ul>
-        {country.languages.map((language) => (
-          <li>{language}</li>
+        {keys.map((key) => (
+          <li key={key}>{languages[key]}</li>
         ))}
       </ul>
     </div>
@@ -23,8 +23,22 @@ const CountryData = ({ country }) => {
       <h1>{`${country.name.common}`}</h1>
       <p>{`capital ${country.capital}`}</p>
       <p>{`area ${country.area}`}</p>
-      <CountryLanguages country={country} />
+      <CountryLanguages languages={country.languages} />
       <img src={country.flags.png} />
+    </div>
+  );
+};
+
+const ShowCountry = ({ country }) => {
+  const [show, setShow] = useState(false);
+
+  return (
+    <div>
+      <p key={country.name.common}>
+        {`${country.name.common}`}{" "}
+        <button onClick={() => setShow(!show)}>{show ? "hide" : "show"}</button>
+      </p>
+      {show && <CountryData country={country} />}
     </div>
   );
 };
@@ -37,7 +51,7 @@ const Countries = ({ countries }) => {
     return <CountryData country={countries[0]} />;
   }
   return countries.map((country) => (
-    <p key={country.name.common}>{`${country.name.common}`}</p>
+    <ShowCountry country={country} key={country.name.common} />
   ));
 };
 
@@ -73,7 +87,7 @@ const App = () => {
     <div>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <div>
-        <Countries countries={filteredCountries} />
+        <Countries countries={newFilter ? filteredCountries : []} />
       </div>
     </div>
   );
