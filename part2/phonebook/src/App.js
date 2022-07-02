@@ -1,10 +1,22 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import personService from "./services/persons";
+
+const DeleteButton = ({ person }) => {
+  const handleDeleteButton = () => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService.remove(person.id);
+      window.location.reload();
+    }
+  };
+
+  return <button onClick={handleDeleteButton}>{"delete"}</button>;
+};
 
 const Persons = ({ persons }) => {
   return persons.map((person) => (
-    <p key={person.name}>{`${person.name} ${person.number}`}</p>
+    <p key={person.name}>
+      {`${person.name} ${person.number}`} <DeleteButton person={person} />
+    </p>
   ));
 };
 
@@ -46,8 +58,8 @@ const App = () => {
   const [newFilter, setNewFilter] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
+    personService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
 
@@ -73,17 +85,14 @@ const App = () => {
   };
 
   const handleNameChange = (event) => {
-    console.log(event.target.value);
     setNewName(event.target.value);
   };
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value);
     setNewNumber(event.target.value);
   };
 
   const handleFilterChange = (event) => {
-    console.log(event.target.value);
     setNewFilter(event.target.value);
   };
 
