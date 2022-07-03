@@ -8,7 +8,6 @@ const DeleteButton = ({ person }) => {
       window.location.reload();
     }
   };
-
   return <button onClick={handleDeleteButton}>{"delete"}</button>;
 };
 
@@ -70,15 +69,46 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
     if (isExisting) {
-      alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const index = persons.findIndex((person) => {
+          return person.name === newName;
+        });
+        const changedPersonObject = {
+          name: newName,
+          number: newNumber,
+        };
+
+        const personId = persons[index].id;
+        personService
+          .update(personId, changedPersonObject)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== personId ? person : returnedPerson
+              )
+            );
+          })
+          .catch((error) => {
+            alert(
+              `person '${changedPersonObject.name}' was already deleted from server`
+            );
+            setPersons(persons.filter((n) => n.personId !== personId));
+          });
+      }
       return;
     }
+
     const personObject = {
       name: newName,
       number: newNumber,
     };
+
     personService.create(personObject).then((returnedNote) => {
-      setPersons(persons.concat(personObject));
+      setPersons(persons.concat(returnedNote));
       setNewName("");
       setNewNumber("");
     });
