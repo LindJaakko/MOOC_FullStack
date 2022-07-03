@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import personService from "./services/persons";
 
-const Notification = ({ message }) => {
+const Notification = ({ message, type }) => {
   if (message === null) {
     return null;
   }
-
+  if (type === "notification") {
+    return <div className="notification">{message}</div>;
+  }
   return <div className="error">{message}</div>;
 };
 
@@ -64,6 +66,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
+  const [errorType, setErrorType] = useState("");
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -102,15 +105,22 @@ const App = () => {
             );
           })
           .catch((error) => {
-            alert(
+            setErrorMessage(
               `person '${changedPersonObject.name}' was already deleted from server`
             );
+            setErrorType("error");
+            setTimeout(() => {
+              setErrorMessage(null);
+              setErrorType("");
+            }, 2000);
             setPersons(persons.filter((n) => n.personId !== personId));
           });
 
         setErrorMessage(`Changed number of ${newName}`);
+        setErrorType("notification");
         setTimeout(() => {
           setErrorMessage(null);
+          setErrorType("");
         }, 2000);
       }
       return;
@@ -128,8 +138,10 @@ const App = () => {
     });
 
     setErrorMessage(`Added ${newName}`);
+    setErrorType("notification");
     setTimeout(() => {
       setErrorMessage(null);
+      setErrorType("");
     }, 2000);
   };
 
@@ -152,7 +164,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} type={errorType} />
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h3>Add a new</h3>
       <PersonForm
